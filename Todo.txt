@@ -1,0 +1,3 @@
+Okno z wybieraniem zegarka, ustawianiem budzika, odliczanie
+  obsługa bazy danych, baza sqlite z pytaniami, wczytywanie pytań
+  aktualizacja repozytorium git
