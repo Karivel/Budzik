@@ -8,6 +8,7 @@
 #include <QDateTime>
 #include <qlist.h>
 #include <QRandomGenerator64>
+#include <QAudio>
 
 namespace Ui {
 class secdialog;

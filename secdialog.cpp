@@ -1,9 +1,8 @@
 #include "secdialog.h"
 #include "ui_secdialog.h"
 
-secdialog::secdialog(QDateTime *selectedTime, QWidget *parent) :
-    QDialog(parent),
-    ui(new Ui::secdialog)
+secdialog::secdialog(QDateTime *selectedTime, QWidget *parent) : QDialog(parent),
+                                                                 ui(new Ui::secdialog)
 {
     randomQuestion = 0;
     questions = new QList<QString>();
@@ -32,8 +31,8 @@ secdialog::secdialog(QDateTime *selectedTime, QWidget *parent) :
     answers->append("1/a*e^ax");
     this->selectedTime = selectedTime;
     ui->setupUi(this);
-    timer=new QTimer(this);
-    connect(timer ,SIGNAL(timeout()),this,SLOT(countTime()));
+    timer = new QTimer(this);
+    connect(timer, SIGNAL(timeout()), this, SLOT(countTime()));
     timer->start();
 }
 
@@ -44,23 +43,36 @@ secdialog::~secdialog()
 
 void secdialog::countTime()
 {
-  QDateTime currentTime = QDateTime::currentDateTime();
-  //int days = currentTime.daysTo(*(this->selectedTime));
-  int seconds = currentTime.secsTo(*selectedTime);
-  int minutes = seconds/60;
-  int hours = minutes/60;
-  minutes -= hours*60;
-  if(hours == 0 && minutes == 0)
-  {
-      timer->stop();
-      QRandomGenerator QRandomGenerator;
-      randomQuestion = QRandomGenerator.bounded(0, 10);
-      ui->textBrowser->setText(questions->value(randomQuestion));
-  }
-  showTime(0, hours, minutes);
+    QDateTime currentTime = QDateTime::currentDateTime();
+    //int days = currentTime.daysTo(*(this->selectedTime));
+    int seconds = currentTime.secsTo(*selectedTime);
+    int minutes = seconds / 60;
+    int hours = minutes / 60;
+    minutes -= hours * 60;
+    if (hours == 0 && minutes == 0)
+    {
+        timer->stop();
+        QAudioFormat desiredFormat;
+        desiredFormat.setChannelCount(2);
+        desiredFormat.setCodec("audio/x-raw");
+        desiredFormat.setSampleType(QAudioFormat::UnSignedInt);
+        desiredFormat.setSampleRate(48000);
+        desiredFormat.setSampleSize(16);
+
+        QAudioDecoder *decoder = new QAudioDecoder(this);
+        decoder->setAudioFormat(desiredFormat);
+        decoder->setSourceFilename("level1.mp3");
+
+        connect(decoder, SIGNAL(bufferReady()), this, SLOT(readBuffer()));
+        decoder->start();
+        QRandomGenerator QRandomGenerator;
+        randomQuestion = QRandomGenerator.bounded(0, 10);
+        ui->textBrowser->setText(questions->value(randomQuestion));
+    }
+    showTime(0, hours, minutes);
 }
 
-void secdialog:: showTime(int days, int hours, int minutes)
+void secdialog::showTime(int days, int hours, int minutes)
 {
     QString text = "Pozostało ";
     //text.append(QString::number(days));
@@ -72,12 +84,11 @@ void secdialog:: showTime(int days, int hours, int minutes)
     ui->Czas->setText(text);
 }
 
-
 void secdialog::on_pushButton_clicked()
 {
     QString test = ui->textEdit->toPlainText();
-    if(!QString::compare(ui->textEdit->toPlainText().toLower().replace(" ", ""),
-                      answers->value(randomQuestion).toLower().replace(" ", "")))
+    if (!QString::compare(ui->textEdit->toPlainText().toLower().replace(" ", ""),
+                          answers->value(randomQuestion).toLower().replace(" ", "")))
     {
         exit(0);
     }
