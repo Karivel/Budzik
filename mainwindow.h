@@ -1,10 +1,6 @@
 #ifndef MAINWINDOW_H
 #define MAINWINDOW_H
 #include "secdialog.h"
-#include <QMainWindow>
-#include <string.h>
-#include <QTimer>
-#include <QDateTime>
 
 QT_BEGIN_NAMESPACE
 namespace Ui { class MainWindow; }
