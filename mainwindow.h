@@ -13,7 +13,7 @@ class MainWindow : public QMainWindow
 public:
     MainWindow(QWidget *parent = nullptr);
     ~MainWindow();
-    QDateTime time;
+    QDateTime *time;
 
 private slots:
     void showTime();
@@ -25,5 +25,6 @@ private slots:
 private:
     Ui::MainWindow *ui;
     secdialog *secDialog;
+
 };
 #endif // MAINWINDOW_H
